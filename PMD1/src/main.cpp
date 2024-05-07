@@ -1,18 +1,30 @@
 #include <Arduino.h>
+#include <stdint.h>
 
-// put function declarations here:
-int myFunction(int, int);
+uint16_t leds[4] = {2, 3, 4, 5};
+
+void turn_on_led(uint16_t led);
+void turn_off_led(uint16_t led);
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  for (uint16_t led: leds){
+    pinMode(led, OUTPUT);
+  }
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  for (uint16_t led: leds){
+    turn_on_led(led);
+    delay(1000);
+    turn_off_led(led);
+    delay(1000);
+  }
 }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+void turn_on_led(uint16_t led){
+  digitalWrite(led, HIGH);
+}
+
+void turn_off_led(uint16_t led){
+  digitalWrite(led, LOW);
 }
