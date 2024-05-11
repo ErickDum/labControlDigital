@@ -8,23 +8,33 @@ LED LED_R = 3;
 LED LED_Y = 4;
 LED LED_G = 5;
 
-bool reverse = false;
+// Define the pins for the buttons
+uint16_t right_direction_button = 6;
+uint16_t left_direction_button = 7;
+
+// Define the pins for the delay buttons
+uint16_t first_delay_button = 8;
+uint16_t second_delay_button = 9;
+
+// Define the delay values
+uint16_t first_delay = 750;
+uint16_t second_delay = 200;
 
 // Define the sequence of LEDs
 LED led_sequence[] = {LED_B, LED_R, LED_Y, LED_G};
 
+// Define the last LED
 LED last_LED = sizeof(led_sequence) / sizeof(led_sequence[0]) - 1;
 
 // Function prototypes
 bool read_key(uint16_t key);
-void secuence(LED *, bool reverse);
+void secuence(LED *, bool reverse, uint16_t delay);
 uint16_t nb_delay(uint16_t delay);
 
 // Setup function
 void setup() {
-  Serial.begin(9600);
-  pinMode(6, INPUT);
-  pinMode(7, INPUT);
+  pinMode(right_direction_button, INPUT);
+  pinMode(left_direction_button, INPUT);
   for (LED led : led_sequence) {
     pinMode(led, OUTPUT);
   }
@@ -32,21 +42,26 @@ void setup() {
 
 // Loop function
 void loop() {
-  if (read_key(6)) reverse = !reverse;
-  Serial.println((reverse) ? "Reverse" : "Normal");
-  secuence(led_sequence, reverse);
+  static bool reverse = false;
+  static uint16_t delay = first_delay;
+
+  if (read_key(6)) reverse = false;
+  if (read_key(7)) reverse = true;
+  if (read_key(8)) delay = first_delay;
+  if (read_key(9)) delay = second_delay;
+
+  secuence(led_sequence, reverse, delay);
 }
 
 // Function definitions
 bool read_key(uint16_t key){
   uint16_t key_value = digitalRead(key);
-  return key_value == 1 ? false : true;
+  return key_value == 1 ? true : false;
 }
 
-void secuence(LED *led_sequence, bool reverse){
+void secuence(LED *led_sequence, bool reverse, uint16_t delay){
   static int16_t current_LED = 0;
   static bool state = false;
-  static uint16_t delay = 750;
   int16_t next_step = (reverse) ? -1 : 1;
 
   if (!state and nb_delay(delay)){
@@ -58,13 +73,9 @@ void secuence(LED *led_sequence, bool reverse){
     current_LED += next_step;
   }
 
-  if (current_LED > last_LED) {
-    current_LED = 0;
-  }
-
-  if (current_LED < 0) {
-    current_LED = last_LED;
-  }
+  // If the current LED is greater than the last LED, reset the current LED to 0
+  if (current_LED > last_LED) current_LED = 0;
+  if (current_LED < 0) current_LED = last_LED;
 }
 
 uint16_t nb_delay(uint16_t delay){
