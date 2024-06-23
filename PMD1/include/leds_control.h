@@ -9,19 +9,19 @@ typedef struct {
 
 typedef struct{
     bool direction; // true for right, false for left
-    uint16_t delay;
+    int16_t delay_position;
     LED* led_sequence;
     uint8_t led_sequence_size;
     uint16_t* delay_values;
     uint8_t delay_values_size;
-} SECUENCE_CONTROL;
+} SEQUENCE_CONTROL;
 
 
 void init_led(LED* led);
 
-void init_secuence_control(SECUENCE_CONTROL* sequence_control, LED* led_sequence, 
+void init_sequence_control(SEQUENCE_CONTROL* sequence_control, LED* led_sequence, 
                            uint8_t led_sequence_size, uint16_t* delay_values, uint8_t delay_values_size);
 
-void update_sequence(SECUENCE_CONTROL* sequence_control);
+void update_sequence(SEQUENCE_CONTROL* sequence_control);
 
 #endif

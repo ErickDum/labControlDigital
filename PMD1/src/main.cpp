@@ -15,27 +15,25 @@ LED LED_GREEN = {.pin = 5,
 
 // Define buttons to change the direction of the sequence
 BUTTON right_direction_button = {.pin = 6, 
-                                 .pull_up = true};
+                                 .pull_down = true};
 BUTTON left_direction_button = {.pin = 7, 
-                                .pull_up = true};
+                                .pull_down = true};
 
 // Define buttons to increase and decrease the delay
-BUTTON increase_delay_button = {.pin = 8, 
-                                .pull_up = true};
-BUTTON decrease_delay_button = {.pin = 9, 
-                                .pull_up = true};
+BUTTON increase_delay_button = {.pin = 9, 
+                                .pull_down = true};
+BUTTON decrease_delay_button = {.pin = 8, 
+                                .pull_down = true};
 
 // Define the delay values
-uint16_t delay_values[] = {1000, 500, 250, 100};
+uint16_t delay_values[] = {250, 750};
 
 // Define the sequence of LEDs
 LED led_sequence[] = {LED_BLUE, LED_RED, LED_YELLOW, LED_GREEN};
 
-SECUENCE_CONTROL sequence_control;
+SEQUENCE_CONTROL sequence_control;
 
 void setup() {
-  Serial.begin(9600);
-
   // Initialize the LEDs
   for (uint8_t i = 0; i < sizeof(led_sequence) / sizeof(led_sequence[0]); i++) {
       init_led(&led_sequence[i]);
@@ -46,11 +44,16 @@ void setup() {
   init_button(&left_direction_button);
   init_button(&increase_delay_button);
   init_button(&decrease_delay_button);
-  
-  init_secuence_control(&sequence_control, led_sequence, sizeof(led_sequence) / sizeof(led_sequence[0]), 
+
+  init_sequence_control(&sequence_control, led_sequence, sizeof(led_sequence) / sizeof(led_sequence[0]), 
                         delay_values, sizeof(delay_values) / sizeof(delay_values[0]));
 }
 
 void loop() {
+  fsm_right_direction_button_update(&right_direction_button, &sequence_control);
+  fsm_left_direction_button_update(&left_direction_button, &sequence_control);
+  fsm_increase_delay_button_update(&increase_delay_button, &sequence_control);
+  fsm_decrease_delay_button_update(&decrease_delay_button, &sequence_control);
+
   update_sequence(&sequence_control);
 }
