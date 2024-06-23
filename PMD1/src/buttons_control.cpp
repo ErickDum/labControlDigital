@@ -47,7 +47,7 @@ void fsm_decrease_delay_button_update(BUTTON* button, SEQUENCE_CONTROL* sequence
 }
 
 
-
+// FSM for the buttons
 void fsm_button_update(BUTTON* button) {
     switch (button->state) {
         case BUTTON_UP:

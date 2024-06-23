@@ -45,6 +45,7 @@ void setup() {
   init_button(&increase_delay_button);
   init_button(&decrease_delay_button);
 
+  // Initialize the sequence control
   init_sequence_control(&sequence_control, led_sequence, sizeof(led_sequence) / sizeof(led_sequence[0]), 
                         delay_values, sizeof(delay_values) / sizeof(delay_values[0]));
 }
