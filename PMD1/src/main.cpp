@@ -1,49 +1,56 @@
 #include <Arduino.h>
-#include "module.h"
-typedef const int16_t LED;
+#include <leds_control.h>
+#include <buttons_control.h>
+#include <utils.h>
 
+// Define properties for the LEDs
+LED LED_BLUE = {.pin = 2, 
+                .color = "blue"};
+LED LED_RED = {.pin = 3,
+               .color = "red"};
+LED LED_YELLOW = {.pin = 4,
+                  .color = "yellow"};
+LED LED_GREEN = {.pin = 5,
+                 .color = "green"};
 
-// Define the pins for the LEDs
-LED LED_B = 2;
-LED LED_R = 3;
-LED LED_Y = 4;
-LED LED_G = 5;
+// Define buttons to change the direction of the sequence
+BUTTON right_direction_button = {.pin = 6, 
+                                 .pull_up = true};
+BUTTON left_direction_button = {.pin = 7, 
+                                .pull_up = true};
 
-// Define the pins for the buttons (pull down) to change the direction
-uint16_t right_direction_button = 6;
-uint16_t left_direction_button = 7;
-
-// Define the pins for the delay buttons (pull down) to change the delay
-uint16_t first_delay_button = 8;
-uint16_t second_delay_button = 9;
+// Define buttons to increase and decrease the delay
+BUTTON increase_delay_button = {.pin = 8, 
+                                .pull_up = true};
+BUTTON decrease_delay_button = {.pin = 9, 
+                                .pull_up = true};
 
 // Define the delay values
-uint16_t first_delay = 750;
-uint16_t second_delay = 200;
+uint16_t delay_values[] = {1000, 500, 250, 100};
 
 // Define the sequence of LEDs
-LED led_sequence[] = {LED_B, LED_R, LED_Y, LED_G};
+LED led_sequence[] = {LED_BLUE, LED_RED, LED_YELLOW, LED_GREEN};
 
-// Setup function
+SECUENCE_CONTROL sequence_control;
+
 void setup() {
-  pinMode(right_direction_button, INPUT);
-  pinMode(left_direction_button, INPUT);
+  Serial.begin(9600);
 
-  for (LED* led = led_sequence; led < led_sequence + sizeof(led_sequence) / sizeof(LED); ++led) {
-    pinMode(*led, OUTPUT);
+  // Initialize the LEDs
+  for (uint8_t i = 0; i < sizeof(led_sequence) / sizeof(led_sequence[0]); i++) {
+      init_led(&led_sequence[i]);
   }
+
+  // Initialize the buttons
+  init_button(&right_direction_button);
+  init_button(&left_direction_button);
+  init_button(&increase_delay_button);
+  init_button(&decrease_delay_button);
+  
+  init_secuence_control(&sequence_control, led_sequence, sizeof(led_sequence) / sizeof(led_sequence[0]), 
+                        delay_values, sizeof(delay_values) / sizeof(delay_values[0]));
 }
 
-// Loop function  
 void loop() {
-  static bool reverse = false;
-  static uint16_t delay = first_delay;
-  static LED last_LED = sizeof(led_sequence) / sizeof(led_sequence[0]) - 1;
-
-  if (read_key(right_direction_button)) reverse = false;
-  if (read_key(left_direction_button)) reverse = true;
-  if (read_key(first_delay_button)) delay = first_delay;
-  if (read_key(second_delay_button)) delay = second_delay;
-
-  secuence(led_sequence, reverse, delay, last_LED);
+  update_sequence(&sequence_control);
 }
