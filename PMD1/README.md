@@ -1,10 +1,7 @@
-# Control Digital de Secuencia de LEDs
-
 Este proyecto está creado para Arduino y tiene como objetivo controlar una secuencia de LEDs. Está desarrollado utilizando PlatformIO.
 
 ## Descripción
-
-El proyecto consiste en una secuencia de LEDs que se pueden controlar mediante 4 botones de tipo pull-up. Dos de los botones se utilizan para cambiar el sentido de la secuencia y los otros dos para ajustar la velocidad de la misma.
+El proyecto consiste en crear una secuencia de encendido y apagado de los LEDs conectados a la placa Arduino. La secuencia puede ser personalizada y configurada a través de los botones de tipo pull-up o pull-down. 
 
 ## Requisitos
 
@@ -16,10 +13,11 @@ El proyecto consiste en una secuencia de LEDs que se pueden controlar mediante 4
 
 ## Instalación
 
-1. Clona o descarga este repositorio.
-2. Conecta los LEDs y las resistencias a la placa Arduino según el esquema proporcionado.
-3. Conecta los botones de control a la placa Arduino.
-4. Abre el proyecto en PlatformIO.
-5. Compila y carga el código en la placa Arduino.
+Para instalar el proyecto, sigue los siguientes pasos:
 
+1. Clona el repositorio en tu máquina local.
+2. Abre el proyecto en PlatformIO.
+3. Conecta la placa Arduino a tu computadora mediante un cable USB.
+4. Configura las conexiones de los LEDs y botones.
+5. Configura los pines correspondinetes a LEDs y botones, y secuencia de LEDs, en `main.cpp`.
 
